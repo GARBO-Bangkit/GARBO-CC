@@ -1,6 +1,7 @@
-/* eslint-disable linebreak-style */
 const Hapi = require('@hapi/hapi');
 const routes = require('./routes');
+const hapiAuthJWT = require('hapi-auth-jwt2');
+const {validate} = require('./functions/validate.js');
 
 const init = async () => {
   const server = Hapi.server({
@@ -12,6 +13,14 @@ const init = async () => {
       },
     },
   });
+
+  await server.register(hapiAuthJWT);
+  server.auth.strategy('jwt', 'jwt',
+      {key: process.env.SECRET_KEY,
+        validate,
+        verifyOptions: {ignoreExpiration: true},
+      });
+  server.auth.default('jwt');
 
   server.route(routes);
   await server.start();

@@ -1,35 +1,51 @@
-/* eslint-disable linebreak-style */
-// const { deleteNoteByIdHandler } = require('./handler');
-// const { editNoteByIdHandler } = require('./handler');
-// const { getNoteByIdHandler } = require('./handler');
-// const { addNoteHandler, getAllNotesHandler } = require('./handler');
+/* eslint-disable max-len */
+const {login, register} = require('./handler');
+const Joi = require('@hapi/joi');
 
 const routes = [
   {
-    method: 'GET',
+    method: 'POST',
     path: '/login',
-    handler: getAuthentication,
-  },
-  {
-    method: 'GET',
-    path: '/register',
-    handler: createUser,
+    config: {
+      auth: false,
+      handler: login,
+      validate: {
+        payload: Joi.object({
+          username: Joi.string().required(),
+          password: Joi.string().required(),
+        }),
+      },
+    },
   },
   {
     method: 'POST',
-    path: '/send',
-    handler: sendPicture,
+    path: '/register',
+    config: {
+      auth: false,
+      handler: register,
+      validate: {
+        payload: Joi.object({
+          name: Joi.string().required(),
+          username: Joi.string().required(),
+          email: Joi.string().required(),
+          password: Joi.string().min(8).required(),
+        }),
+      },
+    },
   },
   {
-    method: 'GET',
-    path: '/result',
-    handler: getResult,
+    method: 'POST',
+    path: '/sendpicture',
+    config: {
+      auth: 'jwt',
+      handler: function(request, h) {
+        const response = h.response({message: 'You used a Valid JWT Token to access /restricted endpoint!'});
+        response.header('Authorization', request.headers.authorization);
+        return response;
+      },
+    },
   },
-  {
-    method: 'DELETE',
-    path: '/notes/{id}',
-    handler: deleteNoteByIdHandler,
-  },
+  // Additional routes here
 ];
 
 module.exports = routes;
