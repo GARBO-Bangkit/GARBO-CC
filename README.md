@@ -11,4 +11,5 @@
 - (MD) A002BSY2175 – Atabik Muhammad Azfa Shofi – Institut Teknologi Bandung - [Active]
 
 
-## API Code in ML-API- Garbo
+## API Code in ML-API- Garbo Repositories already deploy
+## This code is not deploy because failed deploy in cloud run
